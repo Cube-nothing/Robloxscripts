@@ -1,0 +1,68 @@
+-- Nothing_cube script with purple UI
+
+-- Define the command prefix
+local prefix = "!"
+
+-- Function to handle commands
+local function handleCommand(player, message)
+    -- Check if the message starts with the command prefix
+    if string.sub(message, 1, 1) == prefix then
+        -- Extract the command and arguments
+        local args = {}
+        for arg in string.gmatch(message, "%S+") do
+            table.insert(args, arg)
+        end
+
+        local command = table.remove(args, 1):lower()
+
+        -- Define commands and their functionalities
+        if command == "!kill" then
+            -- Kill the player's character
+            player.Character:BreakJoints()
+        elseif command == "!tp" then
+            -- Teleport the player's character to the specified position
+            local targetPlayer = game.Players:FindFirstChild(args[1])
+            if targetPlayer then
+                local targetCharacter = targetPlayer.Character
+                if targetCharacter then
+                    player.Character:MoveTo(targetCharacter.Head.Position)
+                else
+                    print("Player does not have a character")
+                end
+            else
+                print("Player not found")
+            end
+        -- Add more commands as needed
+        else
+            print("Unknown command")
+        end
+    end
+end
+
+-- Listen for new player chats
+game.Players.PlayerAdded:Connect(function(player)
+    player.Chatted:Connect(function(message)
+        handleCommand(player, message)
+    end)
+    
+    -- Customize the player's UI
+    local gui = Instance.new("ScreenGui")
+    gui.Parent = player.PlayerGui
+    
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 50)
+    frame.Position = UDim2.new(0, 0, 1, -50)
+    frame.BackgroundColor3 = Color3.fromRGB(128, 0, 128) -- Purple color
+    frame.BorderSizePixel = 0
+    frame.Parent = gui
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.Text = "Welcome to Nothing_cube!"
+    label.TextColor3 = Color3.new(1, 1, 1) -- White text color
+    label.BackgroundTransparency = 1
+    label.Font = Enum.Font.SourceSans
+    label.TextSize = 20
+    label.Parent = frame
+end)
